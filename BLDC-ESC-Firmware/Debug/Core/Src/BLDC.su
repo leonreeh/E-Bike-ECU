@@ -1,0 +1,4 @@
+../Core/Src/BLDC.c:25:10:hallState	24	static
+../Core/Src/BLDC.c:64:6:commutator	24	static
+../Core/Src/BLDC.c:197:6:initBLDC	24	static
+../Core/Src/BLDC.c:207:6:BLDCbreak	8	static
