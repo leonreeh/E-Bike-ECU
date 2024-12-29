@@ -1,4 +1,4 @@
 ../Core/Src/BLDC.c:25:10:hallState	19
 ../Core/Src/BLDC.c:64:6:commutator	9
-../Core/Src/BLDC.c:197:6:initBLDC	1
-../Core/Src/BLDC.c:207:6:BLDCbreak	1
+../Core/Src/BLDC.c:201:6:initBLDC	1
+../Core/Src/BLDC.c:216:6:BLDCbreak	1

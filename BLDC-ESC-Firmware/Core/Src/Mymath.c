@@ -21,6 +21,11 @@ uint16_t map(uint16_t x, uint16_t in_min, uint16_t in_max, uint16_t out_min, uin
   return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
+/**
+  * @brief Converts a raw ADC value to the corresponding input voltage
+  * @param val    = Raw 12-bit ADC value (0-4095)
+  * @retval float = Calculated input voltage
+  */
 float adc_volt(uint16_t val){
 	//((val/(39000+2200))*2200) /12bitADC
     float Vcc = 3.3;
@@ -35,6 +40,11 @@ float adc_volt(uint16_t val){
     return Vin;
 }
 
+/**
+  * @brief Converts a raw ADC value to the corresponding current based on shunt resistor and amplification factor
+  * @param val    = Raw 12-bit ADC value (0-4095)
+  * @retval float = Calculated current in amperes
+  */
 float adc_cur(uint16_t val){
     float Vcc = 3.3;
     float amplification_factor = 20.0;
@@ -56,6 +66,11 @@ float adc_cur(uint16_t val){
     return current;
 }
 
+/**
+  * @brief Converts a raw ADC value to the corresponding temperature in Celsius using an NTC thermistor
+  * @param val    = Raw 12-bit ADC value (0-4095)
+  * @retval float = Calculated temperature in Celsius
+  */
 float adc_temp(uint16_t val){
     float Vcc = 3.3;
     float R2 = 10000.0;
@@ -78,6 +93,11 @@ float adc_temp(uint16_t val){
     return T_Celsius;
 }
 
+/**
+  * @brief Converts motor RPM to speed in kilometers per hour (km/h) based on wheel circumference
+  * @param rpm    = Motor RPM (revolutions per minute)
+  * @retval float = Calculated speed in kilometers per hour (km/h)
+  */
 float rpm_tokmh(float rpm){
 	//36inch wheel
 	//91,44 cm wheel
@@ -108,6 +128,13 @@ void pid_init_f(pid_f_t * ptr ,float min ,float max ){
   ptr->kd  = 2;
 }
 
+/**
+  * @brief Computes the PID control output based on setpoint, process variable, and PID parameters
+  * @param ptr    = Pointer to a pid_f_t structure containing PID parameters and state variables
+  * @param sp     = Setpoint value for the PID controller
+  * @param pv     = Process variable (current system value)
+  * @retval uint16_t = Computed PID control output, bounded by specified limits
+  */
 uint16_t apply_pid(pid_f_t* ptr, int sp, float pv){
 	  //float temp;
 	  //float p;
