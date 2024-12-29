@@ -254,6 +254,13 @@ void TIM2_IRQHandler(void)
 	}else{
 		timcc++;
 	}
+	 // Increment counter only if in SWFAULT state
+	if (STATE == SWFAULT) {
+		swfault_time_counter++;
+	} else {
+		// Reset the counter if leaving SWFAULT state
+        swfault_time_counter = 0;
+	}
 
   /* USER CODE END TIM2_IRQn 0 */
   HAL_TIM_IRQHandler(&htim2);

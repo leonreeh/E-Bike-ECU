@@ -51,8 +51,8 @@ extern int timcc;
 extern float ADC_VAL[4];
 //Button data[Light,Blinker L, Blinker R, Aux]
 extern uint16_t but[4];
-
 extern lcd_ar lcd_val;
+extern uint32_t swfault_time_counter;
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -76,11 +76,18 @@ void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
+//interrupt Handlers
+void handleBreakInterrupt();
+void handleHardwareFaultInterrupt();
+void handleHallSensorInterrupt(uint16_t GPIO_Pin);
+//helper functions
+void setFaultState(const char* errorMessage);
 void ADC3_Select_CH(int ch);
 void readADCs();
 void doADCs();
 void readDI();
 void setDO();
+//state functions
 void ready();
 void drive();
 void breaking();
@@ -163,19 +170,26 @@ void debug();
 #define HWFAULT 4
 #define DEBUGST 6
 //BLDC
-#define MAXDUTY 100
-#define MINDUTY 0
+#define THROTTLE_THRESHOLD 30 //Threshold for initial start to prevent adc drift
+#define MAXDUTY 100		//Motor PWM Duty Cycle
+#define MINDUTY 0		//Motor PWM Duty Cycle
 #define MAXADC 3170		//throttle MAX 2,55V
 #define MINADC 1055		//throttle MIN 0.85V
-#define MAXRPM 4500
-#define MINRPM 25
+#define MAXRPM 4500		//Max RPM of the given motor
+#define MINRPM 25		//Min RPM of the given motor
 //Software limits for ADC measurments
-#define SW_OC 		 5	//Over Current 		20,5A	((20,5*0,004)/20) /12bitADC
-#define SW_UV 		 20	//Under Voltage 	43,5V	((43,5/(39000+2200))*2200) /12bitADC
-#define SW_OV 		 60	//Under Voltage 	43,5V
-#define SW_OT 		 90	//Over Temperature 	95°C	((3,3/(10000+1140))*10000)) /12bitADC
-#define Temp_FAN_ON  40	//Turn on fan here	75°C
-#define Temp_FAN_OFF 25	//Turn off fan here 50°C
+#define SW_OC 		 22		//Over Current 			20,5A	((20,5*0,004)/20) /12bitADC
+#define SW_UV 		 44		//Under Voltage 		43,5V	((43,5/(39000+2200))*2200) /12bitADC
+#define SW_OV 		 60		//Over Voltage 			43,5V
+#define SW_OT 		 100	//Over Temperature 	95°C	((3,3/(10000+1140))*10000)) /12bitADC
+#define Temp_FAN_ON  80	//Turn on fan here	75°C
+#define Temp_FAN_OFF 60	//Turn off fan here 50°C
+//Blinker PWM
+#define BLINKER_START 250 // Run blinker at nom. PWM
+#define BLINKER_STOP 500  // Turns off blinker PWM
+//other
+#define ADC_TIMEOUT 20
+#define SWFAULT_TIMOUT 300
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

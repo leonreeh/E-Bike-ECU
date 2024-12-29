@@ -86,6 +86,8 @@ float ADC_VAL[4];
 //Button data[Light,Blinker L, Blinker R, Aux]
 uint16_t but[4];
 
+// Global variable to track time in SWFAULT state (in 100ms units)
+uint32_t swfault_time_counter = 0;
 
 /*
  * Display variables
@@ -214,14 +216,17 @@ int main(void)
 //Test change for git commit
 	  	  case READY:
 	  		  ready();
+	  		  setDO();
 	  		  break;
 
 	  	  case DRIVE:
 	  		  drive();
+	  		  setDO();
 	  		  break;
 
 	  	  case BREAK:
 	  		  breaking();
+	  		  setDO();
 	  		  break;
 
 	  	  case SWFAULT:
@@ -239,10 +244,8 @@ int main(void)
 	  	  default:
 	  		  hwfault();
 	  		  break;
-
 	  	  }
-	  //set outputs
-	  setDO();
+
 	  //Update LCD every 500ms
 	  if(timcc>=5){
 		  update_lcd_val(&lcd_val,ADC_VAL);
@@ -805,55 +808,73 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE BEGIN 4 */
 //Interrupt Pin Function
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
-{
-	//Break Signal Interrupt
-	if(GPIO_Pin == EXTI5_Break_Pin){
-		uint16_t b =(GPIOC->IDR & GPIO_IDR_ID5)? 0x0001 : 0x0000;
-		if(b==0){
-			STATE = BREAK;
-			HAL_GPIO_WritePin(PB0_LED_GREEN_GPIO_Port,PB0_LED_GREEN_Pin,GPIO_PIN_RESET);
-			HAL_GPIO_WritePin(PB1_LED_RED_GPIO_Port,PB1_LED_RED_Pin,GPIO_PIN_SET);
-
-		}
-		if(b==1){
-			STATE = READY;
-	  		HAL_GPIO_WritePin(PB0_LED_GREEN_GPIO_Port,PB0_LED_GREEN_Pin,GPIO_PIN_SET);
-	  		HAL_GPIO_WritePin(PB1_LED_RED_GPIO_Port,PB1_LED_RED_Pin,GPIO_PIN_RESET);
-		}
-	}
-	//Hardware Fault interrupt
-	if(GPIO_Pin == EXTI9_FAULT_Pin){
-		//STATE = HWFAULT;
-		//readADCs();
-	}
-	//Hall Sensor Interrupt
-	if(STATE == DRIVE || STATE == READY){
-		if(GPIO_Pin == EXTI6_HALL_U_Pin || GPIO_Pin == EXTI7_HALL_V_Pin || GPIO_Pin == EXTI8_HALL_W_Pin){
-
-			hallCC++;
-			uint16_t hall[3];
-			hall[0]= (GPIOC->IDR & GPIO_IDR_ID6)? 0x0001 : 0x0000; // Sensor A
-			hall[1]= (GPIOC->IDR & GPIO_IDR_ID7)? 0x0001 : 0x0000; // Sensor B
-			hall[2]= (GPIOC->IDR & GPIO_IDR_ID8)? 0x0001 : 0x0000; // Sensor C
-
-			//sine control
-			/*
-			 * uint16_t commutatorStep= hallState(hall);
-			 * uint16_t phaseAngle = electricalAngle(commutatorStep);
-			 * FOCcommutator(phaseAngle,duty);
-			 */
-
-			//trapazoidal control
-			  uint16_t commutatorStep= hallState(hall);
-			  commutator(commutatorStep, duty,dir);
-
-		}
-	}
-	else {
-      __NOP();
-	}
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
+    // Handle Break Signal Interrupt
+    if (GPIO_Pin == EXTI5_Break_Pin) {
+    	handleBreakInterrupt();
+    }
+    // Handle Hardware Fault Interrupt
+    else if (GPIO_Pin == EXTI9_FAULT_Pin) {
+    	handleHardwareFaultInterrupt();
+    }
+    // Handle Hall Sensor Interrupt
+    else if (STATE == DRIVE || STATE == READY) {
+        if (GPIO_Pin == EXTI6_HALL_U_Pin || GPIO_Pin == EXTI7_HALL_V_Pin || GPIO_Pin == EXTI8_HALL_W_Pin) {
+        	handleHallSensorInterrupt(GPIO_Pin);
+        }
+    } else {
+        // No operation for other states
+        __NOP();
+    }
 }
+
+// Handle break signal interrupt
+void handleBreakInterrupt() {
+    uint16_t breakSignal = (GPIOC->IDR & GPIO_IDR_ID5) ? 0x0001 : 0x0000;
+    if (breakSignal == 0) {
+        // Transition to BREAK state
+        STATE = BREAK;
+        HAL_GPIO_WritePin(PB0_LED_GREEN_GPIO_Port, PB0_LED_GREEN_Pin, GPIO_PIN_RESET);
+        HAL_GPIO_WritePin(PB1_LED_RED_GPIO_Port, PB1_LED_RED_Pin, GPIO_PIN_SET);
+    } else {
+        // Transition to READY state
+        STATE = READY;
+        HAL_GPIO_WritePin(PB0_LED_GREEN_GPIO_Port, PB0_LED_GREEN_Pin, GPIO_PIN_SET);
+        HAL_GPIO_WritePin(PB1_LED_RED_GPIO_Port, PB1_LED_RED_Pin, GPIO_PIN_RESET);
+    }
+}
+
+/* Interrupt Handler Functions*/
+
+// Handle hardware fault interrupt
+void handleHardwareFaultInterrupt() {
+	STATE = HWFAULT;
+    // Optional: Implement hardware fault handling
+    // Example readADCs() and determine fault cause;
+}
+
+// Handle hall sensor interrupt
+void handleHallSensorInterrupt(uint16_t GPIO_Pin) {
+    hallCC++; // Increment hall sensor counter
+
+    // Read hall sensor states
+    uint16_t hall[3];
+    hall[0] = (GPIOC->IDR & GPIO_IDR_ID6) ? 0x0001 : 0x0000; // Sensor U
+    hall[1] = (GPIOC->IDR & GPIO_IDR_ID7) ? 0x0001 : 0x0000; // Sensor V
+    hall[2] = (GPIOC->IDR & GPIO_IDR_ID8) ? 0x0001 : 0x0000; // Sensor W
+
+    // Trapazoidal control
+    uint16_t commutatorStep = hallState(hall);
+    commutator(commutatorStep, duty, dir);
+
+    // Optional: Implement sine control as needed
+    /*
+     * uint16_t commutatorStep = hallState(hall);
+     * uint16_t phaseAngle = electricalAngle(commutatorStep);
+     * FOCcommutator(phaseAngle, duty);
+     */
+}
+
 /* Input Functions*/
 //Analog Input
 void readADCs(){
@@ -862,7 +883,7 @@ void readADCs(){
 	//READ Voltage
 	ADC3_Select_CH(0);
 	HAL_ADC_Start(&hadc3);
-	HAL_ADC_PollForConversion(&hadc3, 20);
+	HAL_ADC_PollForConversion(&hadc3, ADC_TIMEOUT);
 	x =HAL_ADC_GetValue(&hadc3);
 	HAL_ADC_Stop(&hadc3);
 	ADC_VAL[0] = adc_volt(x);
@@ -870,7 +891,7 @@ void readADCs(){
 	//READ Current
 	ADC3_Select_CH(1);
 	HAL_ADC_Start(&hadc3);
-	HAL_ADC_PollForConversion(&hadc3, 20);
+	HAL_ADC_PollForConversion(&hadc3, ADC_TIMEOUT);
 	x =HAL_ADC_GetValue(&hadc3);
 	HAL_ADC_Stop(&hadc3);
 	ADC_VAL[1] = adc_cur(x);
@@ -878,50 +899,58 @@ void readADCs(){
 	//READ Temperature
 	ADC3_Select_CH(2);
 	HAL_ADC_Start(&hadc3);
-	HAL_ADC_PollForConversion(&hadc3, 20);
+	HAL_ADC_PollForConversion(&hadc3, ADC_TIMEOUT);
 	x =HAL_ADC_GetValue(&hadc3);
 	HAL_ADC_Stop(&hadc3);
 	ADC_VAL[2] = adc_temp(x);
 
 }
 
-void doADCs(){
+void doADCs() {
+    // Ensure ADC_VAL array has enough elements
+    if (sizeof(ADC_VAL) / sizeof(ADC_VAL[0]) < 3) {
+        // Handle error (e.g., log it, set state to fault)
+        STATE = SWFAULT;
+        HD44780_SetCursor(0, 1);
+        HD44780_PrintStr("ERR:ADC VAL SIZE");
+        return;
+    }
 
-	//FAN ON
-	if(ADC_VAL[2]>=Temp_FAN_ON){
-		HAL_GPIO_WritePin(GPIOB,PB8_DO_FAN_Pin,GPIO_PIN_RESET);
-	}
-	//FAN OFF
-	else if(ADC_VAL[2]<=Temp_FAN_OFF){
-		HAL_GPIO_WritePin(GPIOB,PB8_DO_FAN_Pin,GPIO_PIN_SET);
-	}
+    // Release SW_FAULT if all conditions are normal
+    if (STATE == SWFAULT) {
+        if (ADC_VAL[0] < SW_OV && ADC_VAL[0] > SW_UV + 2 &&  // Voltage OK
+            ADC_VAL[1] <= 1 &&                              // Current OK
+            ADC_VAL[2] <= Temp_FAN_ON) {                    // Temperature OK
+            STATE = BREAK;
+        }
+    }
+    // Device is in normal condition
+    if (STATE !=SWFAULT){
+        // Control the fan based on temperature
+        if (ADC_VAL[2] >= Temp_FAN_ON) {
+            HAL_GPIO_WritePin(GPIOB, PB8_DO_FAN_Pin, GPIO_PIN_RESET); // FAN ON
+        } else if (ADC_VAL[2] <= Temp_FAN_OFF) {
+            HAL_GPIO_WritePin(GPIOB, PB8_DO_FAN_Pin, GPIO_PIN_SET);   // FAN OFF
+        }
 
+        // Check for software faults and set error messages
+        if (ADC_VAL[0] >= SW_OV) {
+            setFaultState("ERR:SW OV");
+        } else if (ADC_VAL[0] <= SW_UV) {
+            setFaultState("ERR:SW UV");
+        } else if (ADC_VAL[1] >= SW_OC) {
+            setFaultState("ERR:SW OC");
+        } else if (ADC_VAL[2] >= SW_OT) {
+            setFaultState("ERR:SW OT");
+        }
+    }
+}
 
-	//ADC SOFTWAR FAULT
-	//Over Voltage
-	if(ADC_VAL[0]>=SW_OV){
-		STATE = SWFAULT;
-		HD44780_SetCursor(0,1);
-		HD44780_PrintStr("ERR:SW OV");
-	}
-	//Under Voltage
-	if(ADC_VAL[0]<=SW_UV){
-		STATE = SWFAULT;
-		HD44780_SetCursor(0,1);
-		HD44780_PrintStr("ERR:SW UV");
-	}
-	//Over Current
-	if(ADC_VAL[1]>=SW_OC){
-		STATE = SWFAULT;
-		HD44780_SetCursor(0,1);
-		HD44780_PrintStr("ERR:SW OC");
-	}
-	//Over Temp
-	if(ADC_VAL[2]>=SW_OT){
-		STATE = SWFAULT;
-		HD44780_SetCursor(0,1);
-		HD44780_PrintStr("ERROR:SW OT");
-	}
+// Helper function to set fault state and display error message
+void setFaultState(const char* errorMessage) {
+    STATE = SWFAULT;
+    HD44780_SetCursor(0, 1);
+    HD44780_PrintStr(errorMessage);
 }
 
 void readDI(){
@@ -938,124 +967,131 @@ void readDI(){
 }
 
 void setDO() {
-    // Button data[Light, Blinker L, Blinker R, Aux]
-    // Toggle lights
+	//Data error
+	if (sizeof(but) / sizeof(but[0]) < 4) {
+		setFaultState("ERR: DO SIZE");
+	}
+
+    // Button data: [Light, Blinker L, Blinker R, Aux]
+    // Toggle lights based on button state
     HAL_GPIO_WritePin(GPIOB, PB3_DO_LIGHT_Pin, but[0] == 0 ? GPIO_PIN_RESET : GPIO_PIN_SET);
 
-    // Toggle blinker L
+    // Handle Blinker Left (PWM Control)
     if (but[1] == 1) {
-    	//Start PWM
-        TIM3->CCR2 = 250;
-
-    }
-    if (but[1] == 0){
-    	// Stop the PWM
-        TIM3->CCR2 = 500;
-
+        TIM3->CCR2 = 250;  // Start PWM
+    } else {
+        TIM3->CCR2 = 500;  // Stop PWM
     }
 
-    // Toggle blinker R
+    // Handle Blinker Right (PWM Control)
     if (but[2] == 1) {
-    	//Start PWM
-        TIM3->CCR1 = 250;
-
-    }
-    if (but[2] == 0){
-        // Stop the PWM
-    	TIM3->CCR1 = 500;
+        TIM3->CCR1 = BLINKER_START;  // Start PWM
+    } else {
+        TIM3->CCR1 = BLINKER_STOP;  // Stop PWM
     }
 
-    // Use Aux signal for something
+    // Handle Aux button action
     if (but[3] == 0) {
-        HAL_GPIO_TogglePin(PB1_LED_RED_GPIO_Port, PB1_LED_RED_Pin);
+        HAL_GPIO_TogglePin(PB1_LED_RED_GPIO_Port, PB1_LED_RED_Pin); // Toggle LED
+        STATE = DRIVE;                                             // Set state to DRIVE
     }
 }
 
 /* STATE Machine Functions */
-void ready(){
+void ready() {
+    // Start ADC conversion
+    HAL_ADC_Start(&hadc1);
+    HAL_ADC_PollForConversion(&hadc1, 20);
 
-	  HAL_ADC_Start(&hadc1);
-	  HAL_ADC_PollForConversion(&hadc1, 20);
-	  rawThrot =HAL_ADC_GetValue(&hadc1);
-	  int THrotduty = map(rawThrot, MINADC,MAXADC,MINDUTY,MAXDUTY);
-	  if(THrotduty >= 30){
-		  /*
-		   * Init PWM
-		   */
-		  TIM1->CCR1 = 0;
-		  TIM1->CCR2 = 0;
-		  TIM1->CCR3 = 0;
-		  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
-		  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
-		  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);
+    // Get throttle raw value
+    rawThrot = HAL_ADC_GetValue(&hadc1);
 
-		  initBLDC();
-		  duty = 10;
-		 //duty = THrotduty;
-		  STATE = DRIVE;
-	  }
+    // Map throttle value to duty cycle range
+    int THrotduty = map(rawThrot, MINADC, MAXADC, MINDUTY, MAXDUTY);
 
+    // Check if throttle duty cycle exceeds the threshold
+    if (THrotduty >= THROTTLE_THRESHOLD) {
+        // Initialize PWM outputs to zero
+        TIM1->CCR1 = 0;
+        TIM1->CCR2 = 0;
+        TIM1->CCR3 = 0;
+
+        // Start PWM for all three channels
+        HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
+        HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
+        HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);
+
+        // Initialize BLDC motor
+        initBLDC();
+
+        // Set initial duty cycle
+        duty = 10; // Set initial duty cycle; modify as needed
+
+        // Change state to DRIVE
+        STATE = DRIVE;
+    }
 }
 
-void drive(){
-	  //HAL_Delay(100);
-	  HAL_ADC_Start(&hadc1);
-	  HAL_ADC_PollForConversion(&hadc1, 20);
-	  rawThrot =HAL_ADC_GetValue(&hadc1);
-	  int THrotduty = map(rawThrot, MINADC,MAXADC,MINDUTY,MAXDUTY);
-	  duty = THrotduty;
+void drive() {
+    // Start ADC conversion
+    HAL_ADC_Start(&hadc1);
 
+    // Wait for ADC conversion to complete with a timeout
+    if (HAL_ADC_PollForConversion(&hadc1, ADC_TIMEOUT) == HAL_OK) {
+        // Get raw throttle value
+        rawThrot = HAL_ADC_GetValue(&hadc1);
+
+        // Map the raw throttle value to a duty cycle range
+        int THrotduty = map(rawThrot, MINADC, MAXADC, MINDUTY, MAXDUTY);
+
+        // Update the duty cycle
+        duty = THrotduty;
+    } else {
+        // Handle ADC conversion error (optional)
+        duty = 0; // Set duty to a safe value in case of failure
+        setFaultState("ERR: ADC");
+        // Optionally log or display an error message
+    }
 }
 
-void breaking(){
-		TIM1->CCR1 = 0;
-		TIM1->CCR2 = 0;
-		TIM1->CCR3 = 0;
-		duty = 0;
-		HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);
-		HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_2);
-		HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_3);
-		HAL_GPIO_WritePin(GPIOB,PB13_U_Pin,GPIO_PIN_SET);
-		HAL_GPIO_WritePin(GPIOB,PB14_V_Pin,GPIO_PIN_SET);
-		HAL_GPIO_WritePin(GPIOB,PB15_W_Pin,GPIO_PIN_SET);
+void breaking() {
+    // Stop all PWM channels
+    TIM1->CCR1 = 0;
+    TIM1->CCR2 = 0;
+    TIM1->CCR3 = 0;
+    duty = 0; // Reset duty cycle to zero
+
+    HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_1);
+    HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_2);
+    HAL_TIM_PWM_Stop(&htim1, TIM_CHANNEL_3);
+
+    // Set GPIO pins for braking mode
+    HAL_GPIO_WritePin(GPIOB, PB13_U_Pin, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(GPIOB, PB14_V_Pin, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(GPIOB, PB15_W_Pin, GPIO_PIN_SET);
 }
 
-void swfault(){
-	breaking();
-	HAL_Delay(300);
-	readADCs();
+void swfault() {
+    // Perform breaking to ensure the system is in a safe state
+    breaking();
 
-	//Voltage OK
-	if((ADC_VAL[0]<SW_OV)&&(ADC_VAL[0]>SW_UV)){
-
-		//Current OK
-		if(ADC_VAL[1]<SW_OC){
-
-			//Temp OK
-			if(ADC_VAL[2]<SW_OT){
-				STATE = DEBUGST;
-				HD44780_SetCursor(0,1);
-				HD44780_PrintStr("           ");
-			}
-		}
-	}
-
-	//Over Temp
-
-
+    // Check if the timeout for SWFAULT has elapsed (30s = 300 units of 100ms)
+    if (swfault_time_counter >= SWFAULT_TIMOUT) {
+        // Transition to HWFAULT state
+        STATE = HWFAULT;
+    }
 }
 
 void hwfault(){
-
+	STATE = HWFAULT;
 	breaking();
 	HD44780_SetCursor(0,1);
 	HD44780_PrintStr("ERROR:HW FAULT");
-	while(HAL_GPIO_ReadPin(GPIOC,EXTI9_FAULT_Pin)==1){
+	//Stuck untill Power on reset
+	while(1){
 		HAL_Delay(100);
+
 	}
-	HD44780_Clear();
-	Init_lcd_ar(&lcd_val);
-	STATE = DRIVE;
 }
 
 void debug(){
