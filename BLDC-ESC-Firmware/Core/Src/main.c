@@ -213,7 +213,6 @@ int main(void)
 	  doADCs();
 	  /* STATE MACHINE */
 	  switch(STATE){
-//Test change for git commit
 	  	  case READY:
 	  		  ready();
 	  		  setDO();

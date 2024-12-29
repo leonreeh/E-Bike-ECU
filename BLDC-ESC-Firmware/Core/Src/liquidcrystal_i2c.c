@@ -108,6 +108,12 @@ void HD44780_Home()
   DelayUS(2000);
 }
 
+/**
+  * @brief Sets the cursor position on the HD44780 LCD display
+  * @param col    = Column position (0-based)
+  * @param row    = Row position (0-based)
+  * @retval void
+  */
 void HD44780_SetCursor(uint8_t col, uint8_t row)
 {
   int row_offsets[] = { 0x00, 0x40, 0x14, 0x54 };
@@ -208,6 +214,11 @@ void HD44780_LoadCustomCharacter(uint8_t char_num, uint8_t *rows)
   HD44780_CreateSpecialChar(char_num, rows);
 }
 
+/**
+  * @brief Prints a string to the HD44780 LCD display
+  * @param c    = Pointer to a null-terminated string to display
+  * @retval void
+  */
 void HD44780_PrintStr(const char c[])
 {
   while(*c) SendChar(*c++);
@@ -297,6 +308,11 @@ static void DelayUS(uint32_t us) {
   } while(cnt < cycles);
 }
 
+/**
+  * @brief Initializes the lcd_ar struct with default cursor positions and display values
+  * @param lcd    = Pointer to an lcd_ar struct to initialize
+  * @retval void
+  */
 void Init_lcd_ar(lcd_ar* lcd){
 	//Load cursor positions
 	lcd ->cur_volt[0] =15;
@@ -338,6 +354,12 @@ void Init_lcd_ar(lcd_ar* lcd){
 	//HD44780_PrintStr("00%");
 }
 
+/**
+  * @brief Updates the lcd_ar struct and LCD display with new sensor values
+  * @param ar     = Pointer to an lcd_ar struct containing cursor positions
+  * @param val    = Array of float values to update [Voltage, Current, Temperature, Speed, (optional: PWM)]
+  * @retval void
+  */
 void update_lcd_val(lcd_ar* ar, float val[]){
 	//Set Voltage
 	snprintf(ar->volt, 5, "%04.1f", val[0]);
