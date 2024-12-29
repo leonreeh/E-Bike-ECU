@@ -827,8 +827,13 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
         __NOP();
     }
 }
+/* Interrupt Handler Functions*/
 
-// Handle break signal interrupt
+/**
+  * @brief Handles the brake interrupt signal, transitioning motor state between BREAK and READY
+  * @param None
+  * @retval void
+  */
 void handleBreakInterrupt() {
     uint16_t breakSignal = (GPIOC->IDR & GPIO_IDR_ID5) ? 0x0001 : 0x0000;
     if (breakSignal == 0) {
@@ -844,16 +849,22 @@ void handleBreakInterrupt() {
     }
 }
 
-/* Interrupt Handler Functions*/
-
-// Handle hardware fault interrupt
+/**
+  * @brief Handles hardware fault interrupts, transitioning motor state to HWFAULT
+  * @param None
+  * @retval void
+  */
 void handleHardwareFaultInterrupt() {
 	STATE = HWFAULT;
     // Optional: Implement hardware fault handling
     // Example readADCs() and determine fault cause;
 }
 
-// Handle hall sensor interrupt
+/**
+  * @brief Handles hall sensor interrupts, updates commutator step for motor control
+  * @param GPIO_Pin      = Pin number that triggered the interrupt
+  * @retval void
+  */
 void handleHallSensorInterrupt(uint16_t GPIO_Pin) {
     hallCC++; // Increment hall sensor counter
 
@@ -876,7 +887,11 @@ void handleHallSensorInterrupt(uint16_t GPIO_Pin) {
 }
 
 /* Input Functions*/
-//Analog Input
+/**
+  * @brief Reads ADC values for voltage, current, and temperature, and updates corresponding variables
+  * @param None
+  * @retval void
+  */
 void readADCs(){
 	uint16_t x =0;
 
@@ -905,7 +920,11 @@ void readADCs(){
 	ADC_VAL[2] = adc_temp(x);
 
 }
-
+/**
+  * @brief Processes ADC values to monitor and control system states, including fault detection and fan control
+  * @param None
+  * @retval void
+  */
 void doADCs() {
     // Ensure ADC_VAL array has enough elements
     if (sizeof(ADC_VAL) / sizeof(ADC_VAL[0]) < 3) {
@@ -946,13 +965,22 @@ void doADCs() {
     }
 }
 
-// Helper function to set fault state and display error message
+/**
+  * @brief Sets the system state to SWFAULT and displays the provided error message
+  * @param errorMessage    = Pointer to a string containing the fault error message
+  * @retval void
+  */
 void setFaultState(const char* errorMessage) {
     STATE = SWFAULT;
     HD44780_SetCursor(0, 1);
     HD44780_PrintStr(errorMessage);
 }
 
+/**
+  * @brief Reads digital input values from GPIO pins and updates button states
+  * @param None
+  * @retval void
+  */
 void readDI(){
     // Button data[Light, Blinker L, Blinker R, Aux]
     uint16_t but_new[4];
@@ -965,7 +993,12 @@ void readDI(){
     	but[i] = but_new[i];
         }
 }
-
+/* Output Functions*/
+/**
+  * @brief Sets digital output states based on button inputs and updates system behavior accordingly
+  * @param None
+  * @retval void
+  */
 void setDO() {
 	//Data error
 	if (sizeof(but) / sizeof(but[0]) < 4) {
@@ -978,9 +1011,9 @@ void setDO() {
 
     // Handle Blinker Left (PWM Control)
     if (but[1] == 1) {
-        TIM3->CCR2 = 250;  // Start PWM
+        TIM3->CCR2 = BLINKER_START;  // Start PWM
     } else {
-        TIM3->CCR2 = 500;  // Stop PWM
+        TIM3->CCR2 = BLINKER_STOP;  // Stop PWM
     }
 
     // Handle Blinker Right (PWM Control)
@@ -998,6 +1031,11 @@ void setDO() {
 }
 
 /* STATE Machine Functions */
+/**
+  * @brief Prepares the system for motor operation by initializing throttle input and PWM control
+  * @param None
+  * @retval void
+  */
 void ready() {
     // Start ADC conversion
     HAL_ADC_Start(&hadc1);
@@ -1032,6 +1070,11 @@ void ready() {
     }
 }
 
+/**
+  * @brief Controls the motor drive by reading throttle input and updating the PWM duty cycle
+  * @param None
+  * @retval void
+  */
 void drive() {
     // Start ADC conversion
     HAL_ADC_Start(&hadc1);
@@ -1054,6 +1097,11 @@ void drive() {
     }
 }
 
+/**
+  * @brief Engages the braking mechanism by stopping PWM outputs and activating braking GPIO pins
+  * @param None
+  * @retval void
+  */
 void breaking() {
     // Stop all PWM channels
     TIM1->CCR1 = 0;
@@ -1071,6 +1119,11 @@ void breaking() {
     HAL_GPIO_WritePin(GPIOB, PB15_W_Pin, GPIO_PIN_SET);
 }
 
+/**
+  * @brief Handles the software fault state by engaging braking and transitioning to HWFAULT after a timeout
+  * @param None
+  * @retval void
+  */
 void swfault() {
     // Perform breaking to ensure the system is in a safe state
     breaking();
@@ -1082,6 +1135,11 @@ void swfault() {
     }
 }
 
+/**
+  * @brief Handles hardware faults by engaging braking, displaying an error message, and halting execution
+  * @param None
+  * @retval void
+  */
 void hwfault(){
 	STATE = HWFAULT;
 	breaking();
@@ -1107,9 +1165,11 @@ void debug(){
 	HAL_GPIO_WritePin(GPIOB,PB15_W_Pin,GPIO_PIN_RESET);
 }
 
-/*
- * @param ch	= 0 == Bus Voltage; 1 == Bus Current, 2 == Temperature
- */
+/**
+  * @brief Configures the ADC3 channel for the selected input
+  * @param ch    = Channel number to configure (0, 1, or 2)
+  * @retval void
+  */
 void ADC3_Select_CH(int ch){
 	ADC_ChannelConfTypeDef sConfig = {0};
 	if(ch ==0){

@@ -193,7 +193,11 @@ void commutator(int commutatorStep, int duty, int dir){
 		TIM1->CCR3 = 0;
 	}
 }
-
+/**
+  * @brief Initializes the BLDC motor by reading hall sensor values and setting the commutator step
+  * @param None
+  * @retval void
+  */
 void initBLDC(){
 	uint16_t hall[3];
 	hall[0]= (GPIOC->IDR & GPIO_IDR_ID6)? 0x0001 : 0x0000; // Sensor A
@@ -204,6 +208,11 @@ void initBLDC(){
 	commutator(step, 15,1);
 }
 
+/**
+  * @brief Engages the brake for the BLDC motor by setting all output phases high and stopping PWM signals
+  * @param None
+  * @retval void
+  */
 void BLDCbreak(){
 	HAL_GPIO_WritePin(GPIOB,PB13_U_Pin,GPIO_PIN_SET);
 	HAL_GPIO_WritePin(GPIOB,PB14_V_Pin,GPIO_PIN_SET);
