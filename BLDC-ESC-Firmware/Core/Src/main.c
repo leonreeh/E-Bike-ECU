@@ -184,23 +184,23 @@ int main(void)
 
    HD44780_SetCursor(6,0);
    HD44780_PrintStr("Init...");
-   HAL_Delay(500);
+   HAL_Delay(250);
 
    HD44780_SetCursor(5,1);
    HD44780_PrintStr("BLDC DRIVE");
-   HAL_Delay(500);
+   HAL_Delay(250);
 
    HD44780_SetCursor(8,2);
    HD44780_PrintStr("By:");
-   HAL_Delay(500);
+   HAL_Delay(250);
 
    HD44780_SetCursor(5,3);
    HD44780_PrintStr("LEON REEH");
-   HAL_Delay(1000);
+   HAL_Delay(500);
    HD44780_Clear();
 
    Init_lcd_ar(&lcd_val);
-
+   resetDO();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -240,6 +240,7 @@ int main(void)
 
 	  	  case DEBUGST:
 	  		  debug();
+	  		  setDO();
 	  		  break;
 
 	  	  default:
