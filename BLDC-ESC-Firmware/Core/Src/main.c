@@ -229,10 +229,12 @@ int main(void)
 	  		  break;
 
 	  	  case SWFAULT:
+	  		  resetDO();
 	  		  swfault();
 	  		  break;
 
 	  	  case HWFAULT:
+	  		  resetDO();
 	  		  hwfault();
 	  		  break;
 
@@ -241,6 +243,7 @@ int main(void)
 	  		  break;
 
 	  	  default:
+	  		  resetDO();
 	  		  hwfault();
 	  		  break;
 	  	  }
@@ -248,10 +251,11 @@ int main(void)
 	  //Update LCD every 500ms
 	  if(timcc>=5){
 		  update_lcd_val(&lcd_val,ADC_VAL);
+		  writeState();
 		  timcc =0;
 	  }
 
-	  HAL_Delay(100);
+	  HAL_Delay(20);
 
     /* USER CODE END WHILE */
 
@@ -841,8 +845,12 @@ void handleBreakInterrupt() {
         HAL_GPIO_WritePin(PB0_LED_GREEN_GPIO_Port, PB0_LED_GREEN_Pin, GPIO_PIN_RESET);
         HAL_GPIO_WritePin(PB1_LED_RED_GPIO_Port, PB1_LED_RED_Pin, GPIO_PIN_SET);
     } else {
-        // Transition to READY state
-        STATE = READY;
+        // Transition to READY state if motor is fully stopped
+    	if(rpm >=5){
+    		STATE = DRIVE;
+    	}else{
+    		STATE = READY;
+    	}
         HAL_GPIO_WritePin(PB0_LED_GREEN_GPIO_Port, PB0_LED_GREEN_Pin, GPIO_PIN_SET);
         HAL_GPIO_WritePin(PB1_LED_RED_GPIO_Port, PB1_LED_RED_Pin, GPIO_PIN_RESET);
     }
@@ -976,6 +984,45 @@ void setFaultState(const char* errorMessage) {
 }
 
 /**
+  * @brief Write the Hardware state to the corresponding position onto the display
+  * @retval void
+  */
+void writeState() {
+    const char *state; // String to hold the text corresponding to the state
+
+    switch (STATE) {
+        case READY:
+            state = "READY";
+            break;
+        case DRIVE:
+            state = "DRIVE";
+            break;
+        case BREAK:
+            state = "BREAK";
+            break;
+        case SWFAULT:
+            state = "SWFAULT";
+            break;
+        case HWFAULT:
+            state = "HWFAULT";
+            break;
+        case DEBUGST:
+        	state = "DEBUG";
+            break;
+        default:
+            state = "UNKNOWN"; // Fallback for undefined states
+            break;
+    }
+
+    // Set the cursor to position (0, 2)
+    HD44780_SetCursor(0, 2);
+
+    // Write the corresponding state string to the display
+    HD44780_PrintStr(state);
+}
+
+
+/**
   * @brief Reads digital input values from GPIO pins and updates button states
   * @param None
   * @retval void
@@ -1027,6 +1074,18 @@ void setDO() {
         HAL_GPIO_TogglePin(PB1_LED_RED_GPIO_Port, PB1_LED_RED_Pin); // Toggle LED
         STATE = DRIVE;                                             // Set state to DRIVE
     }
+}
+
+/**
+  * @brief Resets digital output states into off state
+  * @param None
+  * @retval void
+  */
+void resetDO(){
+	//main light off
+	HAL_GPIO_WritePin(GPIOB, PB3_DO_LIGHT_Pin,GPIO_PIN_RESET);
+	TIM3->CCR2 = BLINKER_STOP;  // Stop Blinker Left PWM
+	TIM3->CCR1 = BLINKER_STOP;  // Stop Blinker Right PWM
 }
 
 /* STATE Machine Functions */

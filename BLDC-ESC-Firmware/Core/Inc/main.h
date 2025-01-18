@@ -82,11 +82,13 @@ void handleHardwareFaultInterrupt();
 void handleHallSensorInterrupt(uint16_t GPIO_Pin);
 //helper functions
 void setFaultState(const char* errorMessage);
+void writeState();
 void ADC3_Select_CH(int ch);
 void readADCs();
 void doADCs();
 void readDI();
 void setDO();
+void resetDO();
 //state functions
 void ready();
 void drive();
