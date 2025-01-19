@@ -8,15 +8,15 @@ The E-Bike ECU project aims to provide a comprehensive solution for managing and
 
 - **BLDC-ESC-Firmware**: Firmware for the Brushless DC (BLDC) motor Electronic Speed Controller (ESC).
 - **Gehäuse STL**: 3D printable STL files for the ECU housing.
-- **LCD Case**: Design files for the LCD display casing.
-- **Motor Test Stand**: Setup and instructions for testing motor performance.
-- **RESC_V2 Hardware**: Hardware design files for the revised ESC version 2.
+- **LCD Case**: 3D printable STL files for the LCD display casing.
+- **Motor Test Stand**: 3D printable STL files for a motor testing Setup.
+- **RESC_V2 Hardware**: Hardware design files for the revised ESC version 2, Inlucding Bill of materials an Gerber files for PCB manufacturing.
 
 ## Features
 
-- **Motor Control**: Efficient management of the BLDC motor using custom firmware.
-- **Customizable Hardware**: Design files for 3D printing the ECU and LCD housings.
-- **Testing Infrastructure**: Resources for setting up a motor test stand to validate performance.
+- **Motor Control**: Control interface for Sensored BLDC motors up to 60V/1000W.
+- **Intigrated Lighting Control**: Designed to drive 12V bike or motorcycle LEDs.
+
 
 ## Getting Started
 
@@ -32,7 +32,7 @@ Refer to the Motor Test Stand folder for test stand setup 3D printable designs.
 Review the RESC_V2 Hardware directory for the latest hardware schematic, layout and Bill of Material.
 
 3. **Prerequisites Hardware**:
-BLDC motor and Compatible Battery.
+Sensored BLDC motor and Compatible Battery (12-60V).
 3D printer for housing components.
 Necessary electronic components as per the hardware design files.
 
