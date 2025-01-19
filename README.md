@@ -61,5 +61,5 @@ This project was inspired and informed by several resources. Special thanks to:
 5. **Stratify Labs** Motor Control using PWM and PID.
 6. **VESC-Project**  Hardware reference and inspiration.
 
-Special thanks to all contributors and the open-source community for their invaluable resources.
+Special thanks to all contributors and the open-source community for their invaluable resources and Guidance.
 
