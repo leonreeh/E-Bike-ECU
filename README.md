@@ -54,10 +54,12 @@ This project is licensed under the MIT License. See the [wikipedia.org/wiki/MIT-
 This project was inspired and informed by several resources. Special thanks to:
 
 1. **Microchip** AN4064 Application Notes: Sensored (Hall Effect Sensor-Based) Field Oriented Control of Three-Phase BLDC Motor Using dsPIC33CK.
-2. **Texas Instruments** Application Report: Trapezoidal Control of BLDC Motors Using Hall Effect Sensors.
-3. **Simple-circuits.com** Sensored brushless DC motor control.
-4. **Stratify Labs** Motor Control using PWM and PID.
-5. **VESC-Project**  Hardware reference and inspiration.
+2. **Texas Instruments**
+   Application Report: Trapezoidal Control of BLDC Motors Using Hall Effect Sensors.
+   Demystifying BLDC motor commutation: Trap, Sine, & FOC
+4. **Simple-circuits.com** Sensored brushless DC motor control.
+5. **Stratify Labs** Motor Control using PWM and PID.
+6. **VESC-Project**  Hardware reference and inspiration.
 
 Special thanks to all contributors and the open-source community for their invaluable resources.
 
