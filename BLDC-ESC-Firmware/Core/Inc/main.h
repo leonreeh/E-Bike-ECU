@@ -173,7 +173,7 @@ void debug();
 #define DEBUGST 6
 //BLDC
 #define THROTTLE_THRESHOLD 30 //Threshold for initial start to prevent adc drift
-#define MAXDUTY 100		//Motor PWM Duty Cycle
+#define MAXDUTY 60		//Motor PWM Duty Cycle
 #define MINDUTY 0		//Motor PWM Duty Cycle
 #define MAXADC 3170		//throttle MAX 2,55V
 #define MINADC 1055		//throttle MIN 0.85V

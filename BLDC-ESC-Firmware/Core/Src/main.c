@@ -196,7 +196,7 @@ int main(void)
 
    HD44780_SetCursor(5,3);
    HD44780_PrintStr("LEON REEH");
-   HAL_Delay(500);
+   HAL_Delay(800);
    HD44780_Clear();
 
    Init_lcd_ar(&lcd_val);
@@ -256,7 +256,7 @@ int main(void)
 		  timcc =0;
 	  }
 
-	  HAL_Delay(20);
+	  HAL_Delay(25);
 
     /* USER CODE END WHILE */
 

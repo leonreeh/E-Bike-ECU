@@ -3297,8 +3297,8 @@ int main(void)
    HD44780_PrintStr("LEON REEH");
  8001ce4:	4836      	ldr	r0, [pc, #216]	@ (8001dc0 <main+0x1ac>)
  8001ce6:	f7ff fda4 	bl	8001832 <HD44780_PrintStr>
-   HAL_Delay(500);
- 8001cea:	f44f 70fa 	mov.w	r0, #500	@ 0x1f4
+   HAL_Delay(800);
+ 8001cea:	f44f 7048 	mov.w	r0, #800	@ 0x320
  8001cee:	f001 fd35 	bl	800375c <HAL_Delay>
    HD44780_Clear();
  8001cf2:	f7ff fd17 	bl	8001724 <HD44780_Clear>
