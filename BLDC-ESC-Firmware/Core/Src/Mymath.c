@@ -113,6 +113,38 @@ float rpm_tokmh(float rpm){
 }
 
 /*
+ * @brief This function converts a battery voltage to the State of Charge (SOC).
+ * @param voltage The battery voltage (in volts) as a floating-point value.
+ * @return The State of Charge (SOC) as a percentage (0.0 to 100.0). Returns -1.0 if the voltage is below the cutoff level.
+ */
+float voltageToSOC(float voltage){
+    // Voltage-to-SOC mapping based on the table
+    if (voltage >= 54.6) return 100.0; // Fully charged
+    else if (voltage >= 53.9) return 95.0;
+    else if (voltage >= 53.2) return 90.0;
+    else if (voltage >= 52.5) return 85.0;
+    else if (voltage >= 51.8) return 80.0;
+    else if (voltage >= 51.2) return 75.0;
+    else if (voltage >= 50.6) return 70.0;
+    else if (voltage >= 50.0) return 65.0;
+    else if (voltage >= 49.4) return 60.0;
+    else if (voltage >= 48.9) return 55.0;
+    else if (voltage >= 48.4) return 50.0;
+    else if (voltage >= 47.9) return 45.0;
+    else if (voltage >= 47.4) return 40.0;
+    else if (voltage >= 46.9) return 35.0;
+    else if (voltage >= 46.4) return 30.0;
+    else if (voltage >= 45.9) return 25.0;
+    else if (voltage >= 45.4) return 20.0;
+    else if (voltage >= 44.9) return 15.0;
+    else if (voltage >= 44.4) return 10.0;
+    else if (voltage >= 43.8) return 5.0;
+    else if (voltage >= 42.0) return 0.0; // Fully discharged
+    else return -1.0; // Invalid voltage (below cutoff)
+}
+
+
+/*
  * @brief This function initializes the data in a PID structure.
  * @param ptr A pointer to the PID data structure
  * @param min The manipulated variable's minimum value

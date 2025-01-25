@@ -24,6 +24,7 @@ float adc_volt(uint16_t val);
 float adc_cur(uint16_t val);
 float adc_temp(uint16_t val);
 float rpm_tokmh(float rpm);
+float voltageToSOC(float voltage);
 void pid_init_f(pid_f_t * ptr ,float min ,float max );
 uint16_t apply_pid(pid_f_t* ptr, int val, float ref);
 

@@ -181,7 +181,7 @@ void debug();
 #define MINRPM 25		//Min RPM of the given motor
 //Software limits for ADC measurments
 #define SW_OC 		 22		//Over Current 			20,5A	((20,5*0,004)/20) /12bitADC
-#define SW_UV 		 44		//Under Voltage 		43,5V	((43,5/(39000+2200))*2200) /12bitADC
+#define SW_UV 		 45		//Under Voltage 		43,5V	((43,5/(39000+2200))*2200) /12bitADC
 #define SW_OV 		 60		//Over Voltage 			43,5V
 #define SW_OT 		 100	//Over Temperature 	95°C	((3,3/(10000+1140))*10000)) /12bitADC
 #define Temp_FAN_ON  80	//Turn on fan here	75°C
