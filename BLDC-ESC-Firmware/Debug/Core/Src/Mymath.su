@@ -3,5 +3,6 @@
 ../Core/Src/Mymath.c:48:7:adc_cur	56	static
 ../Core/Src/Mymath.c:74:7:adc_temp	72	static
 ../Core/Src/Mymath.c:101:7:rpm_tokmh	32	static
-../Core/Src/Mymath.c:121:6:pid_init_f	24	static
-../Core/Src/Mymath.c:138:10:apply_pid	40	static
+../Core/Src/Mymath.c:120:7:voltageToSOC	16	static
+../Core/Src/Mymath.c:153:6:pid_init_f	24	static
+../Core/Src/Mymath.c:170:10:apply_pid	40	static

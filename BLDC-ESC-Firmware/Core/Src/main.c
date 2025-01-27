@@ -901,31 +901,34 @@ void handleHallSensorInterrupt(uint16_t GPIO_Pin) {
   * @retval void
   */
 void readADCs(){
-	uint16_t x =0;
-
+	uint16_t a =0;  //Int dump for ADC
+	float x = 0.0;
 	//READ Voltage
 	ADC3_Select_CH(0);
 	HAL_ADC_Start(&hadc3);
 	HAL_ADC_PollForConversion(&hadc3, ADC_TIMEOUT);
-	x =HAL_ADC_GetValue(&hadc3);
+	a =HAL_ADC_GetValue(&hadc3);
 	HAL_ADC_Stop(&hadc3);
-	ADC_VAL[0] = adc_volt(x);
+	x = adc_volt(a);
+	ADC_VAL[0] = 0.15 * x + (1.0- 0.15)*ADC_VAL[0];
 
 	//READ Current
 	ADC3_Select_CH(1);
 	HAL_ADC_Start(&hadc3);
 	HAL_ADC_PollForConversion(&hadc3, ADC_TIMEOUT);
-	x =HAL_ADC_GetValue(&hadc3);
+	a =HAL_ADC_GetValue(&hadc3);
 	HAL_ADC_Stop(&hadc3);
-	ADC_VAL[1] = adc_cur(x);
+	x = adc_volt(a);
+	ADC_VAL[1] = 0.15 * x + (1.0- 0.15)*ADC_VAL[1];
 
 	//READ Temperature
 	ADC3_Select_CH(2);
 	HAL_ADC_Start(&hadc3);
 	HAL_ADC_PollForConversion(&hadc3, ADC_TIMEOUT);
-	x =HAL_ADC_GetValue(&hadc3);
+	a =HAL_ADC_GetValue(&hadc3);
 	HAL_ADC_Stop(&hadc3);
-	ADC_VAL[2] = adc_temp(x);
+	x = adc_volt(a);
+	ADC_VAL[2] = 0.15 * x + (1.0- 0.15)*ADC_VAL[2];
 
 }
 /**
