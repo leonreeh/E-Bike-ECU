@@ -1,0 +1,113 @@
+\babel@toc {ngerman}{}\relax 
+\contentsline {paragraph}{\nonumberline Vorwort}{2}{}%
+\contentsline {paragraph}{\nonumberline Lizenz}{2}{}%
+\contentsline {part}{\numberline {I}Einleitung und Projektbeschreibung}{5}{}%
+\contentsline {chapter}{\numberline {1}Einleitung}{6}{}%
+\contentsline {section}{\numberline {1.1}Technische Spezifikation}{6}{}%
+\contentsline {chapter}{\numberline {2}Systemdesign}{7}{}%
+\contentsline {section}{\numberline {2.1}Funktionsbeschreibung}{7}{}%
+\contentsline {section}{\numberline {2.2}Bedienung}{8}{}%
+\contentsline {section}{\numberline {2.3}Sicherheitsfunktionen}{9}{}%
+\contentsline {part}{\numberline {II}Schaltplan, Layout und Software}{10}{}%
+\contentsline {chapter}{\numberline {3}Schaltplan}{11}{}%
+\contentsline {subsection}{\numberline {3.0.1}Kernbauteile}{11}{}%
+\contentsline {section}{\numberline {3.1}Netzteil}{11}{}%
+\contentsline {subsection}{\numberline {3.1.1}Powertrain}{12}{}%
+\contentsline {subsection}{\numberline {3.1.2}DC/DC}{12}{}%
+\contentsline {subsection}{\numberline {3.1.3}Protection circuits}{13}{}%
+\contentsline {subsection}{\numberline {3.1.4}Hardware Interrupt}{14}{}%
+\contentsline {subsection}{\numberline {3.1.5}Mikrocontroller}{15}{}%
+\contentsline {subsection}{\numberline {3.1.6}BLDC}{17}{}%
+\contentsline {subsection}{\numberline {3.1.7}Beleuchtung}{19}{}%
+\contentsline {subsection}{\numberline {3.1.8}Temperatur}{20}{}%
+\contentsline {subsection}{\numberline {3.1.9}IO}{21}{}%
+\contentsline {chapter}{\numberline {4}Layout}{22}{}%
+\contentsline {section}{\numberline {4.1}Design Regeln}{23}{}%
+\contentsline {section}{\numberline {4.2}PCB Dimensionierung}{23}{}%
+\contentsline {section}{\numberline {4.3}Layer Design}{24}{}%
+\contentsline {chapter}{\numberline {5}Software}{26}{}%
+\contentsline {section}{\numberline {5.1}Prozesse \& Softwarearchitektur}{27}{}%
+\contentsline {paragraph}{\nonumberline \textbf {1. Der Hardware Interrupt}}{27}{}%
+\contentsline {paragraph}{\nonumberline \textbf {2. Der Timer Interrupt}}{27}{}%
+\contentsline {paragraph}{\nonumberline \textbf {3. Die Main Loop}}{27}{}%
+\contentsline {subsection}{\numberline {5.1.1}Zustandsautomat/State Machine}{28}{}%
+\contentsline {section}{\numberline {5.2}Source Code}{30}{}%
+\contentsline {subsection}{\numberline {5.2.1}Main.c/h}{30}{}%
+\contentsline {paragraph}{\nonumberline \textbf {Main Loop}}{30}{}%
+\contentsline {paragraph}{\nonumberline \textbf {readADCs()}}{30}{}%
+\contentsline {paragraph}{\nonumberline \textbf {doADCs()}}{30}{}%
+\contentsline {paragraph}{\nonumberline \textbf {readDI()}}{30}{}%
+\contentsline {paragraph}{\nonumberline \textbf {setDO()}}{30}{}%
+\contentsline {paragraph}{\nonumberline \textbf {ready()}}{31}{}%
+\contentsline {paragraph}{\nonumberline \textbf {drive()}}{31}{}%
+\contentsline {paragraph}{\nonumberline \textbf {breaking()}}{31}{}%
+\contentsline {paragraph}{\nonumberline \textbf {swfault()}}{31}{}%
+\contentsline {paragraph}{\nonumberline \textbf {hwfault()}}{31}{}%
+\contentsline {paragraph}{\nonumberline \textbf {HAL\_GPIO\_EXTI\_Callback()}}{31}{}%
+\contentsline {paragraph}{\nonumberline \textbf {handleHardwareFaultInterrupt()}}{31}{}%
+\contentsline {paragraph}{\nonumberline \textbf {handleBreakInterrupt()}}{31}{}%
+\contentsline {paragraph}{\nonumberline \textbf {handleHallSensorInterrupt()}}{32}{}%
+\contentsline {subsection}{\numberline {5.2.2}BLDC.c/h}{32}{}%
+\contentsline {paragraph}{\nonumberline \textbf {hallState()}}{32}{}%
+\contentsline {paragraph}{\nonumberline \textbf {commutator()}}{32}{}%
+\contentsline {paragraph}{\nonumberline \textbf {initBLDC()}}{32}{}%
+\contentsline {paragraph}{\nonumberline \textbf {BLDCbreak()}}{32}{}%
+\contentsline {subsection}{\numberline {5.2.3}liquidcrystal\_i2c.c/h}{32}{}%
+\contentsline {paragraph}{\nonumberline \textbf {lcd struct}}{32}{}%
+\contentsline {paragraph}{\nonumberline \textbf {HD44780\_SetCursor()}}{32}{}%
+\contentsline {paragraph}{\nonumberline \textbf {HD44780\_PrintStr()}}{32}{}%
+\contentsline {paragraph}{\nonumberline \textbf {Init\_lcd\_ar()}}{33}{}%
+\contentsline {paragraph}{\nonumberline \textbf {update\_lcd\_val()}}{33}{}%
+\contentsline {subsection}{\numberline {5.2.4}Mymath.c/h}{33}{}%
+\contentsline {paragraph}{\nonumberline \textbf {pid struct}}{33}{}%
+\contentsline {paragraph}{\nonumberline \textbf {map()}}{33}{}%
+\contentsline {paragraph}{\nonumberline \textbf {adc\_volt()}}{33}{}%
+\contentsline {paragraph}{\nonumberline \textbf {adc\_cur()}}{33}{}%
+\contentsline {paragraph}{\nonumberline \textbf {adc\_temp()}}{33}{}%
+\contentsline {paragraph}{\nonumberline \textbf {rpm\_tokmh()}}{34}{}%
+\contentsline {subsection}{\numberline {5.2.5}stm32f4xx\_it.c/h}{34}{}%
+\contentsline {paragraph}{\nonumberline \textbf {TIM2\_IRQHandler()}}{34}{}%
+\contentsline {section}{\numberline {5.3}Controller Konfiguration}{35}{}%
+\contentsline {chapter}{\numberline {6}Gehäuse}{37}{}%
+\contentsline {section}{\numberline {6.1}Mechanische Eigenschaften}{37}{}%
+\contentsline {section}{\numberline {6.2}Konstruktion}{38}{}%
+\contentsline {section}{\numberline {6.3}Gehäuse Komponenten}{38}{}%
+\contentsline {part}{\numberline {III}Entwicklungsprozess und Relevante Konzepte}{41}{}%
+\contentsline {chapter}{\numberline {7}Entwicklungsprozess}{43}{}%
+\contentsline {paragraph}{\nonumberline Planung}{43}{}%
+\contentsline {paragraph}{\nonumberline Designphase}{43}{}%
+\contentsline {chapter}{\numberline {8}Designphasen}{45}{}%
+\contentsline {section}{\numberline {8.1}Designphase 1}{45}{}%
+\contentsline {paragraph}{\nonumberline Mikrocontroller}{45}{}%
+\contentsline {paragraph}{\nonumberline Motor Treiber}{45}{}%
+\contentsline {paragraph}{\nonumberline Netzteil}{46}{}%
+\contentsline {section}{\numberline {8.2}Designphase 2}{46}{}%
+\contentsline {paragraph}{\nonumberline Integration}{46}{}%
+\contentsline {paragraph}{\nonumberline Motor Treiber Redesign}{47}{}%
+\contentsline {paragraph}{\nonumberline Netzteil Redesign}{47}{}%
+\contentsline {section}{\numberline {8.3}Designphase 3}{47}{}%
+\contentsline {paragraph}{\nonumberline Display}{47}{}%
+\contentsline {paragraph}{\nonumberline LED Treiber}{47}{}%
+\contentsline {section}{\numberline {8.4}Abschluss der Entwicklung}{48}{}%
+\contentsline {chapter}{\numberline {9}Relevante Konzepte}{49}{}%
+\contentsline {section}{\numberline {9.1}BLDC}{49}{}%
+\contentsline {paragraph}{\nonumberline Grundlagen}{49}{}%
+\contentsline {paragraph}{\nonumberline Ansteuerung}{50}{}%
+\contentsline {paragraph}{\nonumberline Trapez Steuerung}{50}{}%
+\contentsline {paragraph}{\nonumberline Sinus Steuerung}{50}{}%
+\contentsline {paragraph}{\nonumberline FOC Steuerung}{51}{}%
+\contentsline {part}{\numberline {IV}Anhang}{52}{}%
+\contentsline {chapter}{\numberline {10}System Design}{53}{}%
+\contentsline {chapter}{\numberline {11}Entwicklung}{55}{}%
+\contentsline {chapter}{\numberline {12}Schaltplan}{57}{}%
+\contentsline {chapter}{\numberline {13}Layout}{65}{}%
+\contentsline {chapter}{\numberline {14}BOM}{75}{}%
+\contentsline {chapter}{\numberline {15}Source Code}{82}{}%
+\contentsline {section}{\numberline {15.1}Main.c/h}{82}{}%
+\contentsline {section}{\numberline {15.2}BLDC.c/h}{94}{}%
+\contentsline {section}{\numberline {15.3}liquidcrystal\_i2c.c/h}{99}{}%
+\contentsline {section}{\numberline {15.4}Mymath.c/h}{102}{}%
+\contentsline {section}{\numberline {15.5}stm32f4xx\_it.c/h}{104}{}%
+\contentsline {chapter}{\numberline {16}Quellen}{105}{}%
+\contentsline {section}{\numberline {16.1}Danksagungen}{105}{}%
+\providecommand \tocbasic@end@toc@file {}\tocbasic@end@toc@file 
