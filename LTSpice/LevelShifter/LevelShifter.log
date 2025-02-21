@@ -1,0 +1,24 @@
+Circuit: * C:\Users\Leon\Desktop\E-BIKE\Spice\LevelShifter\LevelShifter.asc
+
+Limiting rise time of source v3 to 1e-05
+Limiting fall time of source v3 to 1e-05
+Direct Newton iteration for .op point succeeded.
+
+Date: Wed Feb  5 16:15:48 2025
+Total elapsed time: 0.053 seconds.
+
+tnom = 27
+temp = 27
+method = modified trap
+totiter = 3962
+traniter = 3953
+tranpoints = 1842
+accept = 1635
+rejected = 207
+matrix size = 11
+fillins = 2
+solver = Normal
+Avg thread counts: 1.4/1.8/1.7/1.4
+Matrix Compiler1: 618 bytes object code size  0.1/0.1/[0.1]
+Matrix Compiler2:      69 opcodes  0.1/[0.1]/0.1
+

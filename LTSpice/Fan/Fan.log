@@ -1,0 +1,29 @@
+Circuit: * C:\Users\Leon\Desktop\E-BIKE\Spice\Fan\Fan.asc
+
+Warning: Multiple definitions of model "2scr375p" Type: BJT
+Warning: Multiple definitions of model "bc857b" Type: BJT
+Warning: Multiple definitions of model "bc847c" Type: BJT
+Warning: Multiple definitions of model "bc847b" Type: BJT
+Limiting rise time of source v3 to 0.01
+Limiting fall time of source v3 to 0.01
+WARNING: Less than two connections to node vcc.  This node is used by v2.
+Direct Newton iteration for .op point succeeded.
+
+Date: Wed Dec 25 14:02:55 2024
+Total elapsed time: 0.069 seconds.
+
+tnom = 27
+temp = 27
+method = modified trap
+totiter = 2725
+traniter = 2708
+tranpoints = 1252
+accept = 1180
+rejected = 72
+matrix size = 16
+fillins = 0
+solver = Normal
+Avg thread counts: 1.5/2.1/2.1/1.5
+Matrix Compiler1: 850 bytes object code size  0.1/0.1/[0.1]
+Matrix Compiler2: off  [0.1]/0.1/0.2
+

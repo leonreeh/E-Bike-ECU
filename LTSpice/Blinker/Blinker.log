@@ -1,0 +1,33 @@
+Circuit: * C:\Users\Leon\Desktop\E-BIKE\Spice\Blinker\Blinker.asc
+
+Warning: Multiple definitions of model "2scr375p" Type: BJT
+Warning: Multiple definitions of model "bc857b" Type: BJT
+Warning: Multiple definitions of model "bc847c" Type: BJT
+Warning: Multiple definitions of model "bc847b" Type: BJT
+Limiting rise time of source v1 to 0.05
+Limiting fall time of source v1 to 0.05
+Limiting rise time of source v3 to 0.2
+Limiting fall time of source v3 to 0.2
+WARNING: Specified period is not longer than the sum of Trise, Tfall, and Ton for v5.  Increasing period to 3
+Limiting rise time of source v5 to 6.21725e-16
+Limiting fall time of source v5 to 6.21725e-16
+Direct Newton iteration for .op point succeeded.
+
+Date: Fri Dec  8 21:13:07 2023
+Total elapsed time: 0.079 seconds.
+
+tnom = 27
+temp = 27
+method = modified trap
+totiter = 6118
+traniter = 6101
+tranpoints = 2478
+accept = 2051
+rejected = 427
+matrix size = 27
+fillins = 2
+solver = Normal
+Avg thread counts: 1.2/1.6/1.6/1.2
+Matrix Compiler1: 1.67 KB object code size  0.4/0.3/[0.2]
+Matrix Compiler2: off  [0.3]/0.5/0.3
+
